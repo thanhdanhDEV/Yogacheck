@@ -116,7 +116,7 @@ if __name__ == '__main__':
                     continue
 
                 landmark_px = normalized_to_pixel_coordinates(landmark.x, landmark.y, image_cols, image_rows)
-                print(LIST_POST[idx], landmark_px)
+                # print(LIST_POST[idx], landmark_px)
 
             # Draw the pose annotation on the image.
             image.flags.writeable = True
