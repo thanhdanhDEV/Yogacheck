@@ -107,6 +107,8 @@ if __name__ == '__main__':
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             results = pose.process(image)
             image_rows, image_cols, _ = image.shape
+
+            lic = {'angle_1': 'elbow_right', 'angle_2': 'elbow_left', 'angle_3': 'shoulder_right', 'angle_4': 'shoulder_left', 'angle_5': 'hip_right', 'angle_6': 'hip_left', 'angle_7': 'knee_right', 'angle_8':'knee_left'}
             for idx, landmark in enumerate(results.pose_landmarks.landmark):
                 idx_to_coordinates = {}
                 if ((landmark.HasField('visibility') and
@@ -116,8 +118,41 @@ if __name__ == '__main__':
                     continue
 
                 landmark_px = normalized_to_pixel_coordinates(landmark.x, landmark.y, image_cols, image_rows)
-                # print(LIST_POST[idx], landmark_px)
-
+                landmarks = results.pose_landmarks.landmark
+                
+                # Get coordinates
+                shoulder_right = [landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].x,landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].y]
+                elbow_right = [landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].x,landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].y]
+                wrist_right = [landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].x,landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].y]
+                shoulder_left = [landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x,landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
+                hip_left = [landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].x,landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].y]
+                ankle_left = [landmarks[mp_pose.PoseLandmark.LEFT_ANKLE.value].x,landmarks[mp_pose.PoseLandmark.LEFT_ANKLE.value].y]
+                hip_right = [landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value].x,landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value].y]
+                ankle_right = [landmarks[mp_pose.PoseLandmark.RIGHT_ANKLE.value].x,landmarks[mp_pose.PoseLandmark.RIGHT_ANKLE.value].y]
+                knee_right = [landmarks[mp_pose.PoseLandmark.RIGHT_KNEE.value].x,landmarks[mp_pose.PoseLandmark.RIGHT_KNEE.value].y]
+                knee_left = [landmarks[mp_pose.PoseLandmark.LEFT_KNEE.value].x,landmarks[mp_pose.PoseLandmark.LEFT_KNEE.value].y]
+                elbow_left = [landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].x,landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].y]
+                wrist_left = [landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].x,landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].y]
+                # Calculate angle
+                angle_1 = calculate_angle(shoulder_right, elbow_right, wrist_right)
+                angle_2 = calculate_angle(shoulder_left, elbow_left, wrist_left)
+                angle_3 = calculate_angle(elbow_right, shoulder_right, hip_right)
+                angle_4 = calculate_angle(elbow_left, shoulder_left,hip_left)
+                angle_5 = calculate_angle(shoulder_right, hip_right, knee_right)
+                angle_6 = calculate_angle(shoulder_left, hip_left, knee_left)
+                angle_7 = calculate_angle(hip_right, knee_right, ankle_right)
+                angle_8 = calculate_angle(hip_left, knee_left, ankle_left)
+                
+                lic1 = [angle_1, angle_2, angle_3, angle_4, angle_5, angle_6, angle_7, angle_8]
+                lic2 = [elbow_right, elbow_left, shoulder_right,shoulder_left, hip_right, hip_left, knee_right, knee_left ]
+                # Visualize angle
+                # lic = round([angle_1, angle_2, angle_3, angle_4, angle_5,angle_6,angle_7,angle_8],2)
+                # lic = {'angle_1': 'elbow_right', 'angle_2': 'elbow_left', 'angle_3': 'shoulder_right', 'angle_4': 'shoulder_left', 'angle_5': 'hip_right', 'angle_6': 'hip_left', 'angle_7': 'knee_right', 'angle_8':'knee_left'}
+                for i in range(len(lic1)):
+                    cv2.putText(image, str(round(lic1[i],2)), 
+                                tuple(np.multiply(lic2[i], [640, 480]).astype(int)), 
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA
+                                        )          
             # Draw the pose annotation on the image.
             image.flags.writeable = True
             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
