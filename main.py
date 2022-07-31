@@ -119,7 +119,7 @@ if __name__ == '__main__':
 
                 landmark_px = normalized_to_pixel_coordinates(landmark.x, landmark.y, image_cols, image_rows)
                 landmarks = results.pose_landmarks.landmark
-                
+
                 # Get coordinates
                 shoulder_right = [landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].x,landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].y]
                 elbow_right = [landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].x,landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].y]
@@ -163,6 +163,6 @@ if __name__ == '__main__':
                 landmark_drawing_spec=mp_drawing_styles.get_default_pose_landmarks_style())
             # Flip the image horizontally for a selfie-view display.
             cv2.imshow('MediaPipe Pose', cv2.flip(image, 1))
-            if cv2.waitKey(5) & 0xFF == 27:
+            if cv2.waitKey(5) & 0xFF == ord('q'):
                 break
     cap.release()
