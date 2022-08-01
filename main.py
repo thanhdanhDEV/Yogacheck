@@ -15,6 +15,7 @@ VISIBILITY_THRESHOLD = 0.5
 PRESENCE_THRESHOLD = 0.5
 # For static images:
 IMAGE_FILES = []
+IMAGE_FILES.append('D:\Danh AI\MyProject\Yoga\Yogacheck\Image\yoga_easy.png')
 BG_COLOR = (192, 192, 192)  # gray
 LIST_POST = ["NOSE", "LEFT_EYE_INNER", "LEFT_EYE", "LEFT_EYE_OUTER", "RIGHT_EYE_INNER", "RIGHT_EYE", "RIGHT_EYE_OUTER",
              "LEFT_EAR", "RIGHT_EAR", "MOUTH_LEFT", "MOUTH_RIGHT", "LEFT_SHOULDER", "RIGHT_SHOULDER", "LEFT_ELBOW",
@@ -57,7 +58,7 @@ if __name__ == '__main__':
             enable_segmentation=True,
             min_detection_confidence=0.5) as pose:
         for idx, file in enumerate(IMAGE_FILES):
-            image = cv2.imread(r'D:\Danh AI\MyProject\Yoga\Yogacheck\Image')
+            image = cv2.imread(file)
             image_height, image_width, _ = image.shape
             # Convert the BGR image to RGB before processing.
             results = pose.process(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
@@ -74,6 +75,7 @@ if __name__ == '__main__':
             # Draw segmentation on the image.
             # To improve segmentation around boundaries, consider applying a joint
             # bilateral filter to "results.segmentation_mask" with "image".
+            # print(results.segmentation_mask)
             condition = np.stack((results.segmentation_mask,) * 3, axis=-1) > 0.1
             bg_image = np.zeros(image.shape, dtype=np.uint8)
             bg_image[:] = BG_COLOR
