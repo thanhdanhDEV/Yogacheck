@@ -15,7 +15,11 @@ VISIBILITY_THRESHOLD = 0.5
 PRESENCE_THRESHOLD = 0.5
 # For static images:
 IMAGE_FILES = []
-IMAGE_FILES.append('D:\Danh AI\MyProject\Yoga\Yogacheck\Image\yoga_easy.png')
+
+STANDARD_POSE = []
+T_POSE = {'elbow_right' : (165, 175), 'elbow_left' : (165, 175), 'shoulder_right' : (85, 105), 'shoulder_left' : (85, 105), 'hip_right' :(170, 180), 'hip_left' : (170, 180), 'knee_right' : (170, 180), 'knee_left' : (170, 180)}
+
+# IMAGE_FILES.append('D:\Danh AI\MyProject\Yoga\Yogacheck\Image\yoga_easy.png')
 BG_COLOR = (192, 192, 192)  # gray
 LIST_POST = ["NOSE", "LEFT_EYE_INNER", "LEFT_EYE", "LEFT_EYE_OUTER", "RIGHT_EYE_INNER", "RIGHT_EYE", "RIGHT_EYE_OUTER",
              "LEFT_EAR", "RIGHT_EAR", "MOUTH_LEFT", "MOUTH_RIGHT", "LEFT_SHOULDER", "RIGHT_SHOULDER", "LEFT_ELBOW",
@@ -76,6 +80,7 @@ if __name__ == '__main__':
             # To improve segmentation around boundaries, consider applying a joint
             # bilateral filter to "results.segmentation_mask" with "image".
             # print(results.segmentation_mask)
+            
             condition = np.stack((results.segmentation_mask,) * 3, axis=-1) > 0.1
             bg_image = np.zeros(image.shape, dtype=np.uint8)
             bg_image[:] = BG_COLOR
