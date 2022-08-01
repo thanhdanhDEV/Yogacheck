@@ -42,15 +42,17 @@ def calculate_angle(a,b,c):
 
 def pose_detection(list_angle, POSE):
     is_yoga_pose = "T POSE"
-    # print(POSE[0][0]) #debug
+    color = (0, 255, 0)
+    # print(POSE[0][0]) #debug - test
     print(list_angle[0])
     for i in range(len(list_angle)):
         if list_angle[i] > POSE[i][0] and list_angle[i] < POSE[i][1]:
             continue
         # print(i) #determine number incorrect coordinates
         is_yoga_pose = "Not T POSE"
+        color = (0, 0, 255)
         break
-    return is_yoga_pose
+    return is_yoga_pose, color
 
 def normalized_to_pixel_coordinates(
         normalized_x: float, normalized_y: float, image_width: int,
@@ -115,8 +117,12 @@ if __name__ == '__main__':
             
             lic1 = [angle_1, angle_2, angle_3, angle_4, angle_5, angle_6, angle_7, angle_8]
             print(lic1)
-            is_yoga_pose = pose_detection(lic1, T_POSE)
+            is_yoga_pose, color = pose_detection(lic1, T_POSE)
             print(is_yoga_pose)
+
+            # Print Pose_detection
+            cv2.putText(image, is_yoga_pose, (10, 30),cv2.FONT_HERSHEY_PLAIN, 2, color, 2)
+
             annotated_image = image.copy()
             # Draw segmentation on the image.
             # To improve segmentation around boundaries, consider applying a joint
@@ -147,8 +153,8 @@ if __name__ == '__main__':
                 landmark_drawing_spec=mp_drawing_styles.get_default_pose_landmarks_style())
             cv2.imwrite('/tmp/annotated_image' + str(idx) + '.png', annotated_image)
             # # Plot pose world landmarks.
-            # mp_drawing.plot_landmarks(
-            #     results.pose_world_landmarks, mp_pose.POSE_CONNECTIONS)
+            mp_drawing.plot_landmarks(
+                results.pose_world_landmarks, mp_pose.POSE_CONNECTIONS)
 
     # For webcam input:
     cap = cv2.VideoCapture(0)
@@ -211,8 +217,9 @@ if __name__ == '__main__':
                 # lic = round([angle_1, angle_2, angle_3, angle_4, angle_5,angle_6,angle_7,angle_8],2)
                 # lic = {'angle_1': 'elbow_right', 'angle_2': 'elbow_left', 'angle_3': 'shoulder_right', 'angle_4': 'shoulder_left', 'angle_5': 'hip_right', 'angle_6': 'hip_left', 'angle_7': 'knee_right', 'angle_8':'knee_left'}
                 print(lic1)
-                is_yoga_pose = pose_detection(lic1, T_POSE)
+                is_yoga_pose, color = pose_detection(lic1, T_POSE)
                 print(is_yoga_pose)
+                cv2.putText(image, is_yoga_pose, (10, 30),cv2.FONT_HERSHEY_PLAIN, 2, color, 2)
                 for i in range(len(lic1)):
                     cv2.putText(image, str(round(lic1[i],2)), 
                                 tuple(np.multiply(lic2[i], [640, 480]).astype(int)), 
