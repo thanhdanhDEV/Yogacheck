@@ -57,7 +57,7 @@ if __name__ == '__main__':
             enable_segmentation=True,
             min_detection_confidence=0.5) as pose:
         for idx, file in enumerate(IMAGE_FILES):
-            image = cv2.imread(file)
+            image = cv2.imread(r'D:\Danh AI\MyProject\Yoga\Yogacheck\Image')
             image_height, image_width, _ = image.shape
             # Convert the BGR image to RGB before processing.
             results = pose.process(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
@@ -105,6 +105,7 @@ if __name__ == '__main__':
             # pass by reference.
             image.flags.writeable = False
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            image = cv2.flip(image, 1)
             results = pose.process(image)
             image_rows, image_cols, _ = image.shape
 
@@ -162,7 +163,7 @@ if __name__ == '__main__':
                 mp_pose.POSE_CONNECTIONS,
                 landmark_drawing_spec=mp_drawing_styles.get_default_pose_landmarks_style())
             # Flip the image horizontally for a selfie-view display.
-            cv2.imshow('MediaPipe Pose', cv2.flip(image, 1))
+            cv2.imshow('MediaPipe Pose',image)
             if cv2.waitKey(5) & 0xFF == ord('q'):
                 break
     cap.release()
